@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vertriebsdashboard - KRAMS Immobilien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --page:#FAFAF8; --paper:#F2F2EE; --card:#FFFFFF; --ink:#1F211E; --muted:#676A63; --line:#DCDCD5; --wire:#B9BAB2;
+  --accent:#CC3366; --accent-soft:#FBEAF0; --accent-ink:#8C1F45;
+  --slate:#4A5568; --slate-soft:#EDF0F4; --slate-ink:#2D3748; --pos:#2E8B57; --pos-soft:#E8F5EE; --pos-line:#BEE3CD; --pos-ink:#1D5C3A;
+  --auto:#234757; --auto-soft:#E6EEF1; --blue:#009EE1; --ok:#2E7D4F;
+  box-sizing:border-box;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+.wrap{max-width:1440px;margin:0 auto;padding:0 32px}
+
+/* Kopfbereich (wie Vorlage) */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:28px 0 8px}
+.for{font-size:14px;color:var(--muted)}
+.cobrand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cobrand .x{font-weight:500}
+.logo{height:28px;width:auto;display:block;color:var(--ink)}
+.partner-img{height:60px;width:auto;display:block}
+
+/* Hero */
+.hero{padding:44px 0 34px;text-align:center}
+.hero h1{font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;font-weight:600}
+.hero p{margin:0 auto;color:var(--muted);font-size:18px;max-width:62ch}
+
+/* Bereichs-Labels */
+.sec{margin:0 0 56px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin:0 0 16px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin:0 0 4px}
+.sec-head h2{margin:0;font-size:24px;font-weight:600;letter-spacing:-.01em}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:4px;display:inline-block}
+.sw.team{background:var(--slate)}.sw.auto{background:var(--auto)}.sw.crm{background:var(--wire)}
+
+/* Bereich 1: Prozess-Canvas */
+.canvas{background-color:var(--paper);background-image:radial-gradient(circle,#D6D6CF 1px,transparent 1.3px);background-size:18px 18px;border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.sizer{position:relative;margin:0 auto}
+.canvas-inner{position:absolute;top:0;left:0;transform-origin:0 0;display:grid;grid-template-columns:290px 560px 290px;column-gap:110px;align-items:center;padding:40px 44px;width:1448px}
+.wires{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.wire{fill:none;stroke:#A3A49B;stroke-width:2;stroke-dasharray:6 5}
+.wire.back{stroke:#D0CFC8}
+@media (prefers-reduced-motion:no-preference){.wire{animation:flow 1.4s linear infinite}.wire.back{animation-direction:reverse}}
+@keyframes flow{to{stroke-dashoffset:-22}}
+.port{fill:#fff;stroke:var(--wire);stroke-width:1.5}
+.wire-label{font-size:11px;fill:var(--muted)}
+.node{position:relative;z-index:1}
+.node-head{margin:0 4px 10px}
+.nh-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.node-title{display:block;font-weight:600;font-size:17px;line-height:1.2}
+.node-sub{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:13px;color:var(--muted)}
+.who{font-size:12px;padding:2px 9px;border-radius:999px;white-space:nowrap;font-weight:500}
+.who.team{background:var(--slate-soft);color:var(--slate-ink)}
+.who.auto{background:var(--auto-soft);color:var(--auto)}
+.who.crm{border:1px solid var(--line);color:var(--muted);background:#fff}
+.node-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 0 rgba(31,33,30,.04)}
+.node.is-team .node-card{border-color:var(--slate);box-shadow:0 0 0 3px var(--slate-soft)}
+.node.is-auto .node-card{border-color:#AFC3CC;box-shadow:0 0 0 3px var(--auto-soft),0 14px 40px rgba(35,71,87,.10)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chips span{font-size:12px;color:var(--muted);background:var(--paper);border-radius:8px;padding:3px 8px}
+
+/* CRM-Karte */
+.crm-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.crm-mark{width:34px;height:34px;border-radius:9px;background:var(--auto-soft);display:grid;place-items:center;flex:none}
+.crm-brand b{display:block;font-size:15px;font-weight:600;line-height:1.2}
+.crm-brand small{display:block;font-size:12px;color:var(--muted)}
+.crm-count{display:flex;align-items:baseline;gap:6px;padding:10px 12px;background:var(--paper);border-radius:10px;margin-bottom:10px}
+.crm-count b{font-size:24px;font-weight:600;letter-spacing:-.01em}
+.crm-count span{font-size:13px;color:var(--muted)}
+.rows{display:grid;gap:7px}
+.row{display:flex;align-items:center;gap:9px;font-size:13px}
+.row i{width:22px;height:22px;border-radius:6px;background:var(--paper);flex:none;display:grid;place-items:center;font-style:normal;font-size:11px;color:var(--muted)}
+
+/* Dashboard-Mockup */
+.dash{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.dash-bar{display:flex;align-items:center;gap:4px;padding:7px 10px;background:var(--paper);border-bottom:1px solid var(--line)}
+.dash-bar i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dash-bar span{margin-left:10px;font-size:11px;color:var(--muted);background:#fff;border-radius:6px;padding:1px 10px}
+.dash-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px 6px}
+.dash-top .t{display:flex;align-items:center;gap:10px}
+.dash-top svg{height:13px;width:auto;color:var(--ink)}
+.dash-top .t span{font-size:13px;font-weight:600;padding-left:10px;border-left:1px solid var(--line)}
+.live{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ok);background:#E7F3EC;border-radius:999px;padding:2px 9px;font-weight:500}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+@media (prefers-reduced-motion:no-preference){.live i{animation:pulse 1.8s ease-in-out infinite}}
+@keyframes pulse{50%{opacity:.35}}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:6px 14px 10px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.kpi small{display:block;font-size:11px;color:var(--muted);line-height:1.2}
+.kpi b{display:block;font-size:22px;font-weight:600;line-height:1.2;margin-top:2px}
+.kpi.hot b{color:var(--accent)}
+.filters{display:flex;gap:6px;padding:0 14px 8px}
+.filters span{font-size:11px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.filters span.on{background:var(--auto);border-color:var(--auto);color:#fff}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{font-weight:500;color:var(--muted);text-align:left;font-size:11px;padding:6px 14px;border-top:1px solid var(--line);background:#FCFCFA}
+.tbl td{padding:7px 14px;border-top:1px solid var(--paper);vertical-align:middle}
+.tbl td b{font-weight:600;display:block;line-height:1.2}
+.tbl td small{color:var(--muted);font-size:11px}
+.tag{display:inline-block;font-size:11px;border-radius:6px;padding:1px 7px;white-space:nowrap}
+.tag.hot{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.warm{background:#FFF1DC;color:#8A5300}
+.tag.new{background:#E3F4FC;color:#00618C}
+.mk{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--auto);color:#fff;font-size:10px;font-weight:600}
+.act{font-size:11px;color:var(--ink);font-weight:500;white-space:nowrap}
+
+/* Makler-Team */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;justify-items:center;padding:4px 0 12px}
+.person{width:52px;height:52px;border-radius:50%;background:var(--slate-soft);display:grid;place-items:center;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.person svg{width:30px;height:30px;color:var(--slate)}
+.today{background:var(--paper);border-radius:10px;padding:10px 12px;font-size:13px;display:grid;gap:6px}
+.today div{display:flex;gap:8px;align-items:center}
+.check{width:16px;height:16px;border-radius:5px;background:var(--slate);color:#fff;display:grid;place-items:center;font-size:11px;flex:none}
+
+/* Bereiche 2 + 3: Kästen */
+.box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:28px;align-items:stretch}
+.inputs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-content:center;padding:8px 4px}
+.stat{border-top:2px solid var(--ink);padding-top:12px}
+.stat .num{font-size:clamp(30px,3.4vw,42px);font-weight:600;letter-spacing:-.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat .num small{font-size:.5em;font-weight:500;letter-spacing:0;margin-left:3px}
+.stat .lbl{font-size:15px;font-weight:500;margin-top:6px}
+.stat .det{font-size:13px;color:var(--muted);margin-top:3px}
+sup{font-size:.6em;color:var(--slate)}
+.result{background:var(--pos-soft);border:1px solid var(--pos-line);border-radius:18px;padding:24px;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.result h3{margin:0;font-size:15px;font-weight:600;color:var(--pos-ink);letter-spacing:.01em}
+.big{font-size:clamp(40px,4.6vw,58px);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.big small{font-size:.42em;font-weight:500;letter-spacing:0;margin-left:4px}
+.big-pair{display:grid;gap:14px}
+.big-pair>div+div{padding-top:14px;border-top:1px solid var(--pos-line)}
+.cap{font-size:13px;color:var(--pos-ink);margin-top:6px}
+.foot{font-size:12px;color:var(--muted);margin:10px 4px 0}
+
+/* Funnel */
+.funnel{display:flex;align-items:stretch;gap:0;align-content:center}
+.step{flex:1 1 0;min-width:0;display:flex;flex-direction:column}
+.step .bar{height:10px;border-radius:5px;background:var(--auto);margin-bottom:12px}
+.step .num{font-size:clamp(24px,2.6vw,34px);font-weight:600;letter-spacing:-.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+.step .lbl{font-size:13px;font-weight:500;margin-top:5px;line-height:1.3}
+.step.end .bar{background:var(--pos)}.step.end .num{color:var(--pos)}
+.arrow{flex:0 0 58px;display:flex;flex-direction:column;align-items:center;padding-top:0}
+.arrow .pct{font-size:12px;font-weight:600;color:var(--auto);background:var(--auto-soft);border-radius:999px;padding:1px 8px;margin-top:-6px;white-space:nowrap}
+.arrow svg{width:30px;height:12px;margin-top:8px;color:var(--wire)}
+.f-left{display:flex;flex-direction:column;gap:24px;justify-content:center}
+.aov{display:flex;align-items:center;gap:14px;padding-top:18px;border-top:1px solid var(--line)}
+.aov b{font-size:26px;font-weight:600;letter-spacing:-.01em}
+.aov span{font-size:14px;color:var(--muted)}
+
+footer{padding:8px 0 40px;color:var(--muted);font-size:13px;max-width:90ch}
+
+@media (max-width:1020px){
+  .box{grid-template-columns:1fr}
+}
+@media (max-width:820px){
+  .wrap{padding:0 16px}
+  .top{flex-wrap:wrap}
+  .canvas{background-size:16px 16px}
+  .sizer{width:auto!important;height:auto!important}
+  .canvas-inner{position:static;display:flex;flex-direction:column;width:auto;padding:22px 14px;transform:none!important}
+  .wires{display:none}
+  .node+.node::before{content:"";display:block;width:2px;height:26px;margin:4px auto 10px;background:repeating-linear-gradient(var(--wire) 0 5px,transparent 5px 9px)}
+  .tbl .hide-s{display:none}
+  .canvas-inner>.node{width:100%;min-width:0}
+  .dash{overflow-x:auto}
+  .tbl th,.tbl td{padding-left:10px;padding-right:10px}
+  .legend{flex-wrap:wrap;gap:6px 14px}
+  .legend span{white-space:nowrap}
+  .inputs{grid-template-columns:1fr}
+  .box{padding:18px}
+  .funnel{flex-direction:column}
+  .arrow{flex:0 0 auto;flex-direction:row;gap:8px;padding:8px 0}
+  .arrow .pct{margin:0}
+  .arrow svg{transform:rotate(90deg);margin:0;width:20px}
+  .step .bar{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="cobrand"><span class="for">Für</span><svg class="logo" viewBox="0 0 135 24" fill="currentColor" role="img" aria-label="KRAMS Immobilien"><path fill-rule="evenodd" clip-rule="evenodd" d="M101.09 0c5.362 0 9.708 4.343 9.708 9.705v13.894h-3.766V9.705a5.941 5.941 0 0 0-9.402-4.824 13.064 13.064 0 0 0-1.885-3.276A9.65 9.65 0 0 1 101.09 0ZM62.531 8.564l.132.28-.003.004 6.98 14.75h4.427L64.745 3.874l-2.215 4.69ZM32.66 11.326h6.693v.003a3.735 3.735 0 0 0 0-7.469V.14a7.456 7.456 0 0 1 7.456 7.455 7.453 7.453 0 0 1-7.456 7.453h-1.164L46.56 23.6h-5.53l-8.37-8.552v-3.721ZM17.651.139 6.164 11.867 17.65 23.599h5.529L11.696 11.867 23.18.139h-5.53ZM0 23.599h3.767V.139H0v23.46ZM36.158.139H25.703v23.46h3.773V3.86h6.682V.14ZM133.17 12.93c-.882-.934-2.042-1.617-3.486-2.04-1.443-.425-3.28-.757-5.5-.998-1.595-.18-2.781-.348-3.564-.5-.779-.151-1.417-.438-1.914-.863-.499-.422-.747-1.028-.747-1.814 0-1.057.532-1.914 1.592-2.565 1.063-.65 2.458-.976 4.182-.976 1.727 0 3.106.393 4.234 1.182 1.128.786 1.775 1.785 1.943 2.997h4.082c-.2-2.362-1.237-4.176-3.112-5.446C129.003.635 126.571 0 123.584 0c-1.827 0-3.47.293-4.930.886-1.46.59-2.613 1.411-3.461 2.471a5.658 5.658 0 0 0-1.269 3.632c0 1.514.432 2.7 1.295 3.563.864.86 1.991 1.492 3.387 1.882 1.392.396 3.183.712 5.377.954 1.56.184 2.765.364 3.609.544.847.184 1.537.516 2.065 1 .532.482.799 1.178.799 2.087 0 1.060-.557 1.914-1.669 2.565-1.114.65-2.564.976-4.356.976-2.027 0-3.676-.438-4.955-1.318-1.28-.876-1.950-2.010-2.017-3.402h-4.083c.032 2.48 1.054 4.417 3.061 5.81 2.011 1.391 4.675 2.087 7.994 2.087 1.859 0 3.551-.286 5.078-.863 1.527-.574 2.739-1.392 3.635-2.452.895-1.057 1.343-2.285 1.343-3.677 0-1.604-.438-2.874-1.318-3.812v-.003ZM62.986.14h-4.427L47.465 23.6h4.427L62.986.139ZM85.446 0a9.703 9.703 0 0 1 9.706 9.705v13.894h-3.767V9.705a5.938 5.938 0 0 0-5.938-5.938 5.938 5.938 0 0 0-5.938 5.938h-.004v13.894H75.74V9.705C75.739 4.343 80.085 0 85.447 0Z"/></svg><span class="for x">X</span><img class="partner-img" src="data:image/webp;base64,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" alt="Breit Media – Digital Automation &amp; AI" width="97" height="60"></div>
+    <span class="for">Konzeptentwurf, persönlich für KRAMS Immobilien erstellt</span>
+  </header>
+
+  <section class="hero">
+    <h1>Automatisiertes Akquise Dashboard<br>für KRAMS Immobilien</h1>
+    <p>Ein Dashboard überprüft rund um die Uhr Ihre CRM-Kontakte und legt Ihrem Maklerteam jeden Morgen die Kontakte vor, bei denen nachgefasst werden soll.</p>
+  </section>
+
+  <!-- BEREICH 1: PROZESSFLOW -->
+  <section class="sec" aria-labelledby="h-flow">
+    <div class="sec-head">
+      <div><p class="eyebrow">Der Prozess</p><h2 id="h-flow">Vom CRM zum Gespräch</h2></div>
+      <div class="legend"><span><i class="sw crm"></i>Bestehendes System</span><span><i class="sw auto"></i>Läuft automatisch</span><span><i class="sw team"></i>Ihr Team</span></div>
+    </div>
+    <div class="canvas"><div class="sizer"><div class="canvas-inner" id="flow">
+      <svg class="wires" aria-hidden="true"></svg>
+
+      <!-- onOffice -->
+      <div class="node" id="n1">
+        <div class="node-head"><div class="nh-row"><span class="node-title">onOffice</span><span class="who crm">Bestand</span></div><span class="node-sub">Zentrale Kundendatenverwaltung/CRM</span></div>
+        <div class="node-card">
+          <div class="crm-brand">
+            <span class="crm-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#234757" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>
+            <div><b>Ihr CRM</b><small>Kontakte, Suchprofile, Historie</small></div>
+          </div>
+          <div class="crm-count"><b>ca. 30.000</b><span>Kontakte</span></div>
+          <div class="rows">
+            <div class="row"><i>⌕</i>Suchprofile (Kauf, Miete)</div>
+            <div class="row"><i>✉</i>Anfragen und Exposé-Abrufe</div>
+            <div class="row"><i>◷</i>Letzter Kontakt und Wiedervorlagen</div>
+          </div>
+          <div class="chips"><span>Bleibt führendes System</span><span>Ergebnisse fließen zurück</span></div>
+        </div>
+      </div>
+
+      <!-- Follow-up-Dashboard -->
+      <div class="node is-auto" id="n2">
+        <div class="node-head"><div class="nh-row"><span class="node-title">Follow-up-Dashboard</span><span class="who auto">Läuft automatisch</span></div><span class="node-sub">24/7</span></div>
+        <div class="node-card">
+          <div class="dash" role="img" aria-label="Beispielansicht des Follow-up-Dashboards für KRAMS Immobilien">
+            <div class="dash-bar"><i></i><i></i><i></i><span>followup.krams-immobilien.de</span></div>
+            <div class="dash-top">
+              <div class="t"><svg class="" viewBox="0 0 135 24" fill="currentColor" role="img" aria-label="KRAMS"><path fill-rule="evenodd" clip-rule="evenodd" d="M101.09 0c5.362 0 9.708 4.343 9.708 9.705v13.894h-3.766V9.705a5.941 5.941 0 0 0-9.402-4.824 13.064 13.064 0 0 0-1.885-3.276A9.65 9.65 0 0 1 101.09 0ZM62.531 8.564l.132.28-.003.004 6.98 14.75h4.427L64.745 3.874l-2.215 4.69ZM32.66 11.326h6.693v.003a3.735 3.735 0 0 0 0-7.469V.14a7.456 7.456 0 0 1 7.456 7.455 7.453 7.453 0 0 1-7.456 7.453h-1.164L46.56 23.6h-5.53l-8.37-8.552v-3.721ZM17.651.139 6.164 11.867 17.65 23.599h5.529L11.696 11.867 23.18.139h-5.53ZM0 23.599h3.767V.139H0v23.46ZM36.158.139H25.703v23.46h3.773V3.86h6.682V.14ZM133.17 12.93c-.882-.934-2.042-1.617-3.486-2.04-1.443-.425-3.28-.757-5.5-.998-1.595-.18-2.781-.348-3.564-.5-.779-.151-1.417-.438-1.914-.863-.499-.422-.747-1.028-.747-1.814 0-1.057.532-1.914 1.592-2.565 1.063-.65 2.458-.976 4.182-.976 1.727 0 3.106.393 4.234 1.182 1.128.786 1.775 1.785 1.943 2.997h4.082c-.2-2.362-1.237-4.176-3.112-5.446C129.003.635 126.571 0 123.584 0c-1.827 0-3.47.293-4.930.886-1.46.59-2.613 1.411-3.461 2.471a5.658 5.658 0 0 0-1.269 3.632c0 1.514.432 2.7 1.295 3.563.864.86 1.991 1.492 3.387 1.882 1.392.396 3.183.712 5.377.954 1.56.184 2.765.364 3.609.544.847.184 1.537.516 2.065 1 .532.482.799 1.178.799 2.087 0 1.060-.557 1.914-1.669 2.565-1.114.65-2.564.976-4.356.976-2.027 0-3.676-.438-4.955-1.318-1.28-.876-1.950-2.010-2.017-3.402h-4.083c.032 2.48 1.054 4.417 3.061 5.81 2.011 1.391 4.675 2.087 7.994 2.087 1.859 0 3.551-.286 5.078-.863 1.527-.574 2.739-1.392 3.635-2.452.895-1.057 1.343-2.285 1.343-3.677 0-1.604-.438-2.874-1.318-3.812v-.003ZM62.986.14h-4.427L47.465 23.6h4.427L62.986.139ZM85.446 0a9.703 9.703 0 0 1 9.706 9.705v13.894h-3.767V9.705a5.938 5.938 0 0 0-5.938-5.938 5.938 5.938 0 0 0-5.938 5.938h-.004v13.894H75.74V9.705C75.739 4.343 80.085 0 85.447 0Z"/></svg><span>Follow-up-Dashboard</span></div>
+              <span class="live"><i></i>Live · 24/7</span>
+            </div>
+            <div class="kpis">
+              <div class="kpi"><small>Fällig heute</small><b>38</b></div>
+              <div class="kpi hot"><small>Heiße Leads</small><b>12</b></div>
+              <div class="kpi"><small>Neu qualifiziert</small><b>7</b></div>
+            </div>
+            <div class="filters"><span class="on">Alle</span><span>Kaufen</span><span>Mieten</span><span>Verkaufen</span></div>
+            <table class="tbl">
+              <thead><tr><th>Kontakt</th><th class="hide-s">Interesse</th><th>Status</th><th>Makler</th><th>Nächster Schritt</th></tr></thead>
+              <tbody>
+                <tr><td><b>M. Hofmann</b><small>zuletzt vor 9 Mon.</small></td><td class="hide-s">3-Zi.-ETW, Reutlingen</td><td><span class="tag hot">Heiß</span></td><td><span class="mk">SK</span></td><td class="act">Heute anrufen</td></tr>
+                <tr><td><b>Familie Wagner</b><small>Suchprofil aktiv</small></td><td class="hide-s">Haus, Pfullingen</td><td><span class="tag hot">Heiß</span></td><td><span class="mk">TB</span></td><td class="act">Neues Objekt senden</td></tr>
+                <tr><td><b>A. Yilmaz</b><small>Exposé geöffnet</small></td><td class="hide-s">2-Zi.-Whg., Miete</td><td><span class="tag warm">Warm</span></td><td><span class="mk">LM</span></td><td class="act">Termin anbieten</td></tr>
+                <tr><td><b>J. Brenner</b><small>neu im CRM</small></td><td class="hide-s">Kapitalanlage</td><td><span class="tag new">Neu</span></td><td><span class="mk">SK</span></td><td class="act">Bedarf klären</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="chips"><span>Leads finden</span><span>Leads prüfen</span><span>Gespräche vorbereiten</span></div>
+        </div>
+      </div>
+
+      <!-- Makler-Team -->
+      <div class="node is-team" id="n3">
+        <div class="node-head"><div class="nh-row"><span class="node-title">Ihre Mitarbeiter</span><span class="who team">Ihr Team</span></div><span class="node-sub">Makler-Team von KRAMS Immobilien</span></div>
+        <div class="node-card">
+          <div class="team-grid" aria-label="9 Makler"><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span><span class="person"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c0-4.2 3.6-6.8 8-6.8s8 2.6 8 6.8z"/></svg></span></div>
+          <div class="today">
+            <div><span class="check">✓</span>Priorisierte Tagesliste</div>
+            <div><span class="check">✓</span>Gesprächsnotiz je Lead</div>
+            <div><span class="check">✓</span>Mehr Zeit für Kunden</div>
+          </div>
+          <div class="chips"><span>Jeden Morgen</span><span>Kein Suchen mehr</span></div>
+        </div>
+      </div>
+    </div></div></div>
+  </section>
+
+  <!-- BEREICH 2: EFFIZIENZ -->
+  <section class="sec" aria-labelledby="h-eff">
+    <div class="sec-head"><div><p class="eyebrow">Effizienz</p><h2 id="h-eff">Zeit, die Ihr Team zurückgewinnt</h2></div></div>
+    <div class="box">
+      <div class="inputs">
+        <div class="stat"><div class="num">9</div><div class="lbl">Makler</div><div class="det">im Team von KRAMS Immobilien</div></div>
+        <div class="stat"><div class="num">ca. 1<small>Std./Tag</small></div><div class="lbl">Aufwand je Makler</div><div class="det">Recherche, Prüfung und Vorbereitung von Leads</div></div>
+        <div class="stat"><div class="num">35 €<sup>1</sup></div><div class="lbl">Kosten pro Stunde</div><div class="det">je Makler</div></div>
+      </div>
+      <div class="result">
+        <h3>Ihre Einsparung pro Jahr</h3>
+        <div class="big-pair">
+          <div><div class="big">2.160<small>Std.</small></div><div class="cap">pro Jahr</div></div>
+          <div><div class="big">75.600 €</div><div class="cap">pro Jahr</div></div>
+        </div>
+      </div>
+    </div>
+    <p class="foot"><sup>1</sup> Angenommene Stundenkosten pro Makler. Berechnung: 9 Makler × 1 Std. × 240 Arbeitstage = 2.160 Std. × 35 € = 75.600 €.</p>
+  </section>
+
+  <!-- BEREICH 3: UMSATZPOTENZIAL -->
+  <section class="sec" aria-labelledby="h-rev">
+    <div class="sec-head"><div><p class="eyebrow">Umsatzpotenzial</p><h2 id="h-rev">Potenzieller Umsatz durch Follow-ups von Kaufinteressenten</h2></div></div>
+    <div class="box">
+      <div class="f-left">
+        <div class="funnel">
+          <div class="step"><span class="bar" style="opacity:.25"></span><div class="num">30.000</div><div class="lbl">Kontakte im CRM</div></div>
+          <div class="arrow"><span class="pct">20 %</span><svg viewBox="0 0 30 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 6h26M22 1l5 5-5 5"/></svg></div>
+          <div class="step"><span class="bar" style="opacity:.4"></span><div class="num">6.000</div><div class="lbl">relevant für Follow-ups</div></div>
+          <div class="arrow"><span class="pct">60 %</span><svg viewBox="0 0 30 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 6h26M22 1l5 5-5 5"/></svg></div>
+          <div class="step"><span class="bar" style="opacity:.6"></span><div class="num">3.600</div><div class="lbl">Kaufinteressenten</div></div>
+          <div class="arrow"><span class="pct">50 %</span><svg viewBox="0 0 30 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 6h26M22 1l5 5-5 5"/></svg></div>
+          <div class="step"><span class="bar" style="opacity:.8"></span><div class="num">1.800</div><div class="lbl">erreicht</div></div>
+          <div class="arrow"><span class="pct">5 %</span><svg viewBox="0 0 30 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 6h26M22 1l5 5-5 5"/></svg></div>
+          <div class="step end"><span class="bar"></span><div class="num">90</div><div class="lbl">Abschlüsse (Kauf, Miete u.&nbsp;a.)</div></div>
+        </div>
+        <div class="aov"><b>Ø 15.000 €</b><span>Umsatz je Abschluss<sup>2</sup></span></div>
+      </div>
+      <div class="result">
+        <h3>Umsatz durch Follow-ups pro Jahr</h3>
+        <div><div class="big">1,35<small>Mio. €</small></div><div class="cap">90 Abschlüsse × 15.000 €</div></div>
+      </div>
+    </div>
+    <p class="foot"><sup>2</sup> Angenommene Werte zur Veranschaulichung. Tatsächliche Quoten und Umsätze hängen von Datenqualität, Marktlage und Objektangebot ab.</p>
+  </section>
+
+  <footer>Konzeptentwurf für die KRAMS Immobilien GmbH. Das Dashboard ist eine vereinfachte Beispielansicht; Namen, Kürzel und Zahlen darin sind frei erfunden. onOffice ist eine Marke der onOffice GmbH.</footer>
+</div>
+
+<script>
+var EDGES=[["n1","n2"],["n2","n3"]];
+var mobile=window.matchMedia("(max-width: 820px)");
+function layout(){
+  var inner=document.getElementById("flow"),sizer=inner.parentNode,canvas=sizer.parentNode,svg=inner.querySelector(".wires");
+  if(mobile.matches){svg.innerHTML="";return;}
+  var z=Math.min(1,(canvas.clientWidth-2)/inner.offsetWidth);
+  inner.style.transform="scale("+z+")";
+  sizer.style.width=(inner.offsetWidth*z)+"px";sizer.style.height=(inner.offsetHeight*z)+"px";
+  var r=inner.getBoundingClientRect();
+  svg.setAttribute("width",inner.offsetWidth);svg.setAttribute("height",inner.offsetHeight);
+  var paths="",ports="";
+  EDGES.forEach(function(e){
+    var a=document.getElementById(e[0]).querySelector(".node-card").getBoundingClientRect();
+    var b=document.getElementById(e[1]).querySelector(".node-card").getBoundingClientRect();
+    var x1=(a.right-r.left)/z,y1=(a.top+a.height/2-r.top)/z,x2=(b.left-r.left)/z,y2=(b.top+b.height/2-r.top)/z;
+    var dx=Math.max(24,(x2-x1)/2);
+    paths+='<path class="wire" d="M'+x1+' '+y1+' C'+(x1+dx)+' '+y1+' '+(x2-dx)+' '+y2+' '+x2+' '+y2+'"/>';
+    ports+='<circle class="port" cx="'+x1+'" cy="'+y1+'" r="5"/><circle class="port" cx="'+x2+'" cy="'+y2+'" r="5"/>';
+  });
+  svg.innerHTML=paths+ports;
+}
+window.addEventListener("resize",layout);
+if(mobile.addEventListener)mobile.addEventListener("change",layout);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
+window.addEventListener("load",layout);
+layout();
+</script>
+</body>
+</html>
